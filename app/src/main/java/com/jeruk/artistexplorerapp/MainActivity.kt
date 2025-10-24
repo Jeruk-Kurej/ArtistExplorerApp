@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeruk.artistexplorerapp.ui.theme.ArtistExplorerAppTheme
+import com.jeruk.artistexplorerapp.ui.view.ArtistExplorerAppView
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,9 +21,11 @@ class MainActivity : ComponentActivity() {
         setContent {
             ArtistExplorerAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
+                    ArtistExplorerAppView(
+                        modifier = Modifier
+                            .padding(
+                                innerPadding
+                            )
                     )
                 }
             }
