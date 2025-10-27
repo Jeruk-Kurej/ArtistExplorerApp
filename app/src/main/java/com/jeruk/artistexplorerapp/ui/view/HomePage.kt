@@ -4,13 +4,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun ArtistExplorerAppView(
+fun HomePage(
     modifier: Modifier = Modifier
 ) {
 
 }
 
 @Composable
-private fun ArtistExplorerAppPreview() {
-    ArtistExplorerAppView()
+private fun HomePagePreview() {
+    HomePage()
 }

@@ -1,7 +1,9 @@
 package com.jeruk.artistexplorerapp.ui.model
 
 data class Artist(
-    val nameArtist: String,
-    val idArtist: Int,
-    val genre: String
+    val nameArtist: String = "",
+    val idArtist: Int = 0,
+    val genre: String = "",
+    val isError: Boolean = false,
+    val errorMessage: String? = null
 )

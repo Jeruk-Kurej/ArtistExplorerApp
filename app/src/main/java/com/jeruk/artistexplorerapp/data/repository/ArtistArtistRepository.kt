@@ -26,29 +26,30 @@ class ArtistArtistRepository(private val service: ArtistArtistService) {
             artistName = artistName
         )
         val body = response.body()!!
-        val dtoArtist = body.album.firstOrNull()!!
+        val dtoAlbum = body.album.firstOrNull()!!
 
         return Album(
-            nameAlbum = dtoArtist.strAlbum,
-            idAlbum = dtoArtist.idAlbum.toInt(),
-            genre = dtoArtist.strGenre,
-            descriptionAlbum = dtoArtist.strDescriptionEN,
-            yearRelease = dtoArtist.intYearReleased.toInt()
+            nameAlbum = dtoAlbum.strAlbum,
+            idAlbum = dtoAlbum.idAlbum.toInt(),
+            releaseDate = dtoAlbum.intYearReleased,
+            coverUrl = dtoAlbum.strAlbumThumb,
+            artistId = dtoAlbum.idArtist.toInt()
         )
     }
 
-    suspend fun TrackTrackTrack(albumId: Int): Track {
+    suspend fun TrackTrackTrack(albumId: Int): List<Track> {
         val response = service.getTrack(
             albumId = albumId
         )
         val body = response.body()!!
-        val dtoArtist = body.track.firstOrNull()!!
+        val dtoTrack = body.track ?: emptyList()
 
-        return Track(
-            nameTrack = dtoArtist.strTrack,
-            idTrack = dtoArtist.idTrack.toInt(),
-            duration = dtoArtist.intDuration.toInt()
-        )
+        return dtoTrack.map {
+            Track(
+                nameTrack = it.strTrack,
+                idTrack = it.idTrack.toInt(),
+                duration = it.intDuration.toInt()
+            )
+        }
     }
-
 }

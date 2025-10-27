@@ -1,9 +1,11 @@
 package com.jeruk.artistexplorerapp.ui.model
 
 data class Album(
-    val nameAlbum: String,
-    val idAlbum: Int,
-    val genre: String,
-    val descriptionAlbum: String,
-    val yearRelease: Int
+    val nameAlbum: String = "",
+    val idAlbum: Int = 0,
+    val releaseDate: String = "",
+    val coverUrl: String = "",
+    val artistId: Int = 0,
+    val isError: Boolean = false,
+    val errorMessage: String? = null
 )

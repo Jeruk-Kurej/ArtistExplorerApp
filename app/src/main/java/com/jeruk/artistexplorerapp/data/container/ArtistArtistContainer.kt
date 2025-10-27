@@ -21,7 +21,7 @@ class ArtistArtistContainer {
         retrofit.create(ArtistArtistService::class.java)
     }
 
-    val artistArtistContainer: ArtistArtistRepository by lazy {
+    val artistArtistRepository: ArtistArtistRepository by lazy {
         ArtistArtistRepository(artistArtistService)
     }
 }
