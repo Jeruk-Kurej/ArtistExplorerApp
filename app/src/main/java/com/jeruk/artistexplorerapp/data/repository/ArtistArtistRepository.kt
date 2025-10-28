@@ -17,7 +17,8 @@ class ArtistArtistRepository(private val service: ArtistArtistService) {
         return Artist(
             nameArtist = dtoArtist.strArtist,
             idArtist = dtoArtist.idArtist.toInt(),
-            genre = dtoArtist.strGenre
+            genre = dtoArtist.strGenre,
+            coverUrl = dtoArtist.strArtistThumb
         )
     }
 

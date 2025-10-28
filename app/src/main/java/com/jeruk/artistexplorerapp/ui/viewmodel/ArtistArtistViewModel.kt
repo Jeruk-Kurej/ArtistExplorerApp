@@ -21,37 +21,48 @@ class ArtistArtistViewModel : ViewModel() {
     private val _tracks = MutableStateFlow<List<Track>>(emptyList())
     val tracks: StateFlow<List<Track>> = _tracks
 
-    fun loadArtistData(artistName: String, albumId: Int) {
+    val repository = ArtistArtistContainer().artistArtistRepository
+
+    fun loadArtist(artistName: String = "John Mayer") {
         viewModelScope.launch {
             try {
-                val repository = ArtistArtistContainer().artistArtistRepository
-
                 val artistResult = repository.ArtistArtistArtist(artistName)
-                val albumResult = repository.AlbumAlbumAlbum(artistName)
-                val trackResults = repository.TrackTrackTrack(albumId)
-
-                _artist.value = artistResult.copy(
-                    isError = false, errorMessage = null
-                )
-                _album.value = albumResult.copy(
-                    isError = false, errorMessage = null
-                )
-                _tracks.value = trackResults.map {
-                    it.copy(
-                        isError = false, errorMessage = null
-                    )
-                }
-
+                _artist.value = artistResult
+                loadAlbums(artistName)
             } catch (e: Exception) {
-                _artist.value = _artist.value.copy(
-                    isError = true, errorMessage = "Failed to load artist"
+                _artist.value = Artist(
+                    isError = true,
+                    errorMessage = e.message ?: "Failed to load artist"
                 )
-                _album.value = _album.value.copy(
-                    isError = true, errorMessage = "Failed to load album"
+            }
+        }
+    }
+
+    fun loadAlbums(artistName: String) {
+        viewModelScope.launch {
+            try {
+                val albumResult = repository.AlbumAlbumAlbum(artistName)
+                _album.value = albumResult
+                loadTracks(albumResult.idAlbum)
+            } catch (e: Exception) {
+                _album.value = Album(
+                    isError = true,
+                    errorMessage = e.message ?: "Failed to load album"
                 )
+            }
+        }
+    }
+
+    fun loadTracks(albumId: Int) {
+        viewModelScope.launch {
+            try {
+                val trackResults = repository.TrackTrackTrack(albumId)
+                _tracks.value = trackResults
+            } catch (e: Exception) {
                 _tracks.value = listOf(
                     Track(
-                        isError = true, errorMessage = "Failed to load tracks"
+                        isError = true,
+                        errorMessage = e.message ?: "Failed to load tracks"
                     )
                 )
             }

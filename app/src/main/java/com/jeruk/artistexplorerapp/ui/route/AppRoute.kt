@@ -1,49 +1,40 @@
 package com.jeruk.artistexplorerapp.ui.route
 
 
-import android.icu.util.Currency
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.Home
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.datastore.preferences.protobuf.LazyStringList
-import androidx.navigation.NavDestination
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.movieapp.ui.view.AddMovieView
-import com.example.movieapp.ui.view.LoginView
-import com.example.movieapp.ui.view.MovieDetailView
-import com.example.movieapp.ui.view.MovieListView
-import com.example.movieapp.ui.view.RegisterView
+import com.jeruk.artistexplorerapp.ui.view.ErrorPage
+import com.jeruk.artistexplorerapp.ui.view.HomePage
+import com.jeruk.artistexplorerapp.ui.view.LoadingPage
+import com.jeruk.artistexplorerapp.ui.viewmodel.ArtistArtistViewModel
 
 enum class AppView(
     val title: String,
     val icon: ImageVector? = null
 ) {
-    AddMovie("Add Movie", Icons.Filled.AddCircle),
-    Login("Login"),
-    MovieDetail("Movie Detail"),
-    MovieList("Movie List", Icons.Filled.Home),
-    Register("Register")
+    Home("Home"),
+    Album("Album"),
+    Loading("Loading"),
+    Error("Error")
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,11 +48,6 @@ fun AppRoute() {
     val currentRoute = currentDestination?.route
     val currentView = AppView.entries.find { it.name == currentRoute }
 
-    val bottomNavItem = listOf(
-        BottomNavItem(AppView.MovieList, "Movies"),
-        BottomNavItem(AppView.AddMovie, "Add")
-    )
-
     Scaffold(
         topBar = {
             MyTopAppBar(
@@ -69,41 +55,30 @@ fun AppRoute() {
                 canNavigateBack = navController.previousBackStackEntry != null,
                 navigateUp = { navController.navigateUp() }
             )
-        },
-        bottomBar = {
-            MyBottomNavigationBar(
-                navController = navController,
-                currentDestination = currentDestination,
-                items = bottomNavItem
-            )
         }
 
     ) { innerPadding ->
         NavHost(
             modifier = Modifier.padding(innerPadding),
             navController = navController,
-            startDestination = AppView.MovieList.name
+            startDestination = AppView.Home.name
         ) {
-            composable(route = AppView.MovieList.name) {
-                MovieListView(navController = navController)
+            composable(route = AppView.Home.name) {
+                HomePage(navController = navController)
             }
 
-            composable(route = AppView.MovieDetail.name + "/{title}") { backStackEntry ->
-                MovieDetailView(
-                    title = backStackEntry.arguments?.getString("title")!!
-                )
+//            composable(route = AppView.MovieDetail.name + "/{title}") { backStackEntry ->
+//                MovieDetailView(
+//                    title = backStackEntry.arguments?.getString("title")!!
+//                )
+//            }
+
+            composable(route = AppView.Loading.name) {
+                LoadingPage()
             }
 
-            composable(route = AppView.AddMovie.name) {
-                AddMovieView()
-            }
-
-            composable(route = AppView.Register.name) {
-                RegisterView()
-            }
-
-            composable(route = AppView.Login.name) {
-                LoginView()
+            composable(route = AppView.Error.name) {
+                ErrorPage()
             }
         }
     }
@@ -115,22 +90,28 @@ fun MyTopAppBar(
     currentView: AppView?,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: ArtistArtistViewModel = viewModel()
 ) {
-    TopAppBar(
+    val artist by viewModel.artist.collectAsState()
+    CenterAlignedTopAppBar(
         title = {
-            Text(text = currentView?.title ?: AppView.MovieList.title)
+            Text(artist.nameArtist)
         },
+        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+            containerColor = Color(0xFF1C2021),
+            titleContentColor = Color(0xFFB5B5B3)
+        ),
         modifier = modifier,
-        navigationIcon = {
-            if (canNavigateBack) {
-                IconButton(onClick = navigateUp) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back"
-                    )
-                }
-            }
-        }
+//        navigationIcon = {
+//            if (canNavigateBack) {
+//                IconButton(onClick = navigateUp) {
+//                    Icon(
+//                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+//                        contentDescription = "Back"
+//                    )
+//                }
+//            }
+//        }
     )
 }

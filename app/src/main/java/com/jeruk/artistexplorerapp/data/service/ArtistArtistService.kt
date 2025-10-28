@@ -9,22 +9,22 @@ import retrofit2.http.Query
 
 interface ArtistArtistService {
 
-    @GET("api/v1/json/123/search.php")
+    @GET("search.php")
     suspend fun getArtistName(
         @Query("s") artistName: String,
     ): Response<ResponseArtist>
 
-    @GET("api/v1/json/123/searchalbum.php")
+    @GET("searchalbum.php")
     suspend fun getAlbum(
         @Query("s") artistName: String,
     ): Response<ResponseAlbum>
 
-    @GET("api/v1/json/123/album.php")
+    @GET("album.php")
     suspend fun getAlbumDetail(
         @Query("m") albumId: Int,
     ): Response<ResponseArtist>
 
-    @GET("api/v1/json/123/track.php")
+    @GET("track.php")
     suspend fun getTrack(
         @Query("m") albumId: Int,
     ): Response<ResponseTrack>
