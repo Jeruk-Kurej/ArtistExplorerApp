@@ -37,6 +37,7 @@ import com.jeruk.artistexplorerapp.ui.viewmodel.ArtistArtistViewModel
 import kotlin.math.ceil
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.jeruk.artistexplorerapp.ui.route.AppView
 
 @Composable
 fun HomePage(
@@ -49,14 +50,14 @@ fun HomePage(
     val albums by viewModel.albums.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.loadArtist("John Mayer")
+        viewModel.loadArtist("Radiohead")
     }
 
     when {
         isLoading -> LoadingPage()
         artist.isError -> ErrorPage(
             message = artist.errorMessage ?: "Terjadi kesalahan tidak diketahui.",
-            onRetry = { viewModel.loadArtist("John Mayer") }
+            onRetry = { viewModel.loadArtist("Radiohead") }
         )
 
         else -> {
@@ -125,16 +126,19 @@ fun HomePage(
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                             userScrollEnabled = false,
-                            modifier = modifier
-                                .height(totalHeight)
+                            modifier = modifier.height(totalHeight)
                         ) {
-                            items(albums) {
+                            items(albums) { album ->
                                 AlbumCard(
-                                    album = it,
-                                    modifier = modifier
+                                    album = album,
+                                    modifier = modifier,
+                                    onClick = {
+                                        navController.navigate("${AppView.AlbumDetail.name}/${album.idAlbum}")
+                                    }
                                 )
                             }
                         }
+
                     }
                 }
             }

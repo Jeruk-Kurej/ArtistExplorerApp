@@ -22,6 +22,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.jeruk.artistexplorerapp.ui.view.AlbumPage
 import com.jeruk.artistexplorerapp.ui.view.ErrorPage
 import com.jeruk.artistexplorerapp.ui.view.HomePage
 import com.jeruk.artistexplorerapp.ui.view.LoadingPage
@@ -32,16 +33,16 @@ enum class AppView(
     val icon: ImageVector? = null
 ) {
     Home("Home"),
-    Album("Album"),
+    AlbumDetail("Album Detail"),
     Loading("Loading"),
     Error("Error")
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppRoute() {
     val navController = rememberNavController()
-
     val artistViewModel: ArtistArtistViewModel = viewModel()
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -69,6 +70,19 @@ fun AppRoute() {
                     navController = navController,
                     viewModel = artistViewModel
                 )
+            }
+
+            composable("${AppView.AlbumDetail.name}/{albumId}") { backStackEntry ->
+                val albumId = backStackEntry.arguments?.getString("albumId")?.toIntOrNull()
+                val albums by artistViewModel.albums.collectAsState()
+                val tracks by artistViewModel.tracks.collectAsState()
+                val selectedAlbum = albums.find { it.idAlbum == albumId }
+
+                if (selectedAlbum != null) {
+                    AlbumPage(album = selectedAlbum, tracks = tracks)
+                } else {
+                    ErrorPage(message = "Album tidak ditemukan.")
+                }
             }
 
             composable(route = AppView.Loading.name) {

@@ -1,6 +1,8 @@
 package com.jeruk.artistexplorerapp.ui.component
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,10 +29,15 @@ import com.jeruk.artistexplorerapp.ui.model.Album
 @Composable
 fun AlbumCard(
     album: Album,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
 ) {
     Card(
-        modifier = modifier,
+        modifier = modifier
+            .clickable {
+                onClick()
+            }
+            .border(0.2.dp, color = Color(0xFFA6A07A), RoundedCornerShape(8.dp)),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults
             .cardColors(
