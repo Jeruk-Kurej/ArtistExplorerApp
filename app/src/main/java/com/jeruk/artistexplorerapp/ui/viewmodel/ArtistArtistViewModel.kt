@@ -50,14 +50,11 @@ class ArtistArtistViewModel : ViewModel() {
         }
     }
 
-    private fun loadAlbums(artistName: String) {
+    fun loadAlbums(artistName: String) {
         viewModelScope.launch {
             try {
                 val albumResults = repository.AlbumAlbumAlbum(artistName)
                 _albums.value = albumResults
-
-                loadTracks(albumResults.first().idAlbum)
-
             } catch (e: IOException) {
                 _albums.value = emptyList()
             } catch (e: Exception) {
@@ -65,8 +62,7 @@ class ArtistArtistViewModel : ViewModel() {
             }
         }
     }
-
-    private fun loadTracks(albumId: Int) {
+    fun loadTracks(albumId: Int) {
         viewModelScope.launch {
             try {
                 val trackResults = repository.TrackTrackTrack(albumId)
