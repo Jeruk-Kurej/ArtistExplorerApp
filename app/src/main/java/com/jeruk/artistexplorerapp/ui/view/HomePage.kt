@@ -76,7 +76,7 @@ fun HomePage(
                                 color = Color(0xFF303030),
                                 RoundedCornerShape(12.dp)
                             )
-                            .size(390.dp)
+                            .size(340.dp)
                     )
                     Column(
                         modifier = Modifier
@@ -98,7 +98,7 @@ fun HomePage(
             }
             Column(
                 modifier = modifier
-                    .padding(start = 16.dp),
+                    .padding(start = 16.dp, end = 12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Text(

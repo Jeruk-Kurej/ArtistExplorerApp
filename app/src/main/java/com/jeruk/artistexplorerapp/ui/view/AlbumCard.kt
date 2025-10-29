@@ -3,7 +3,10 @@ package com.jeruk.artistexplorerapp.ui.component
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -42,18 +45,18 @@ fun AlbumCard(
                 contentDescription = "album cover",
                 modifier = Modifier
                     .clip(RoundedCornerShape(8.dp))
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
+                    .size(160.dp),
                 contentScale = ContentScale.Crop
             )
             Column(
                 modifier = modifier
-                    .padding(start = 8.dp)
+                    .padding(start = 12.dp, bottom = 12.dp, top = 12.dp)
             ) {
                 Text(
                     text = album.nameAlbum,
                     fontSize = 14.sp,
-                    color = Color(0xFFA6A07A)
+                    color = Color(0xFFA6A07A),
+                    maxLines = 1
                 )
                 Text(
                     text = "${album.releaseDate} • ${album.genre}",
