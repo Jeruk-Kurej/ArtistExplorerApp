@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -32,6 +34,10 @@ import coil.compose.rememberAsyncImagePainter
 import com.jeruk.artistexplorerapp.ui.component.AlbumCard
 import com.jeruk.artistexplorerapp.ui.viewmodel.ArtistArtistViewModel
 
+import kotlin.math.ceil
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+
 @Composable
 fun HomePage(
     modifier: Modifier = Modifier,
@@ -48,73 +54,87 @@ fun HomePage(
 
     when {
         isLoading -> LoadingPage()
-
         artist.isError -> ErrorPage(
             message = artist.errorMessage ?: "Terjadi kesalahan tidak diketahui.",
             onRetry = { viewModel.loadArtist("John Mayer") }
         )
 
-        else -> Column(
-            modifier = modifier
-                .fillMaxSize()
-                .background(Color(0xFF282828))
-        ) {
-            Row(
+        else -> {
+            val albumCount = albums.size
+            val columns = 2
+            val heightPerCard = 220.dp
+            val spacing = 12.dp
+            val rows = ceil(albumCount / columns.toFloat()).toInt()
+            val totalHeight: Dp = (heightPerCard * rows) + (spacing * (rows - 1))
+
+            LazyColumn(
                 modifier = modifier
-                    .padding(top = 8.dp, bottom = 12.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
+                    .fillMaxSize()
+                    .background(Color(0xFF282828))
             ) {
-                Box {
-                    Image(
-                        painter = rememberAsyncImagePainter(artist.coverUrl),
-                        contentDescription = "Cover",
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(12.dp))
-                            .border(
-                                width = 2.dp,
-                                color = Color(0xFF303030),
-                                RoundedCornerShape(12.dp)
+                item {
+                    Row(
+                        modifier = modifier
+                            .padding(top = 8.dp, bottom = 12.dp)
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Box {
+                            Image(
+                                painter = rememberAsyncImagePainter(artist.coverUrl),
+                                contentDescription = "Cover",
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .border(
+                                        width = 2.dp,
+                                        color = Color(0xFF303030),
+                                        RoundedCornerShape(12.dp)
+                                    )
+                                    .size(340.dp)
                             )
-                            .size(340.dp)
-                    )
+                            Column(
+                                modifier = Modifier
+                                    .align(Alignment.BottomStart)
+                                    .padding(12.dp)
+                            ) {
+                                Text(
+                                    artist.nameArtist,
+                                    color = Color(0xFFA6A07A),
+                                    fontSize = 21.sp,
+                                )
+                                Text(
+                                    artist.genre,
+                                    color = Color(0xFFA6A07A),
+                                    fontSize = 15.sp,
+                                )
+                            }
+                        }
+                    }
+
                     Column(
-                        modifier = Modifier
-                            .align(Alignment.BottomStart)
-                            .padding(12.dp)
+                        modifier = modifier
+                            .padding(start = 16.dp, end = 12.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         Text(
-                            artist.nameArtist,
-                            color = Color(0xFFA6A07A),
-                            fontSize = 21.sp,
+                            "Album",
+                            color = Color(0xFFA6A07A)
                         )
-                        Text(
-                            artist.genre,
-                            color = Color(0xFFA6A07A),
-                            fontSize = 15.sp,
-                        )
-                    }
-                }
-            }
-            Column(
-                modifier = modifier
-                    .padding(start = 16.dp, end = 12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Text(
-                    "Album",
-                    color = Color(0xFFA6A07A)
-                )
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    items(albums) {
-                        AlbumCard(
-                            album = it,
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(2),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                            userScrollEnabled = false,
                             modifier = modifier
-                        )
+                                .height(totalHeight)
+                        ) {
+                            items(albums) {
+                                AlbumCard(
+                                    album = it,
+                                    modifier = modifier
+                                )
+                            }
+                        }
                     }
                 }
             }

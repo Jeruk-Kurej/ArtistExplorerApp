@@ -44,6 +44,7 @@ fun AlbumCard(
                 model = album.coverUrl,
                 contentDescription = "album cover",
                 modifier = Modifier
+                    .height(150.dp)
                     .clip(RoundedCornerShape(8.dp))
                     .size(160.dp),
                 contentScale = ContentScale.Crop
