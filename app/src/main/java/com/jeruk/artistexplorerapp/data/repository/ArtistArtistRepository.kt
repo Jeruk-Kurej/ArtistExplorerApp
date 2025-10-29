@@ -35,10 +35,11 @@ class ArtistArtistRepository(private val service: ArtistArtistService) {
                 Album(
                     nameAlbum = it.strAlbum,
                     idAlbum = it.idAlbum.toIntOrNull() ?: -1,
-                    releaseDate = it.intYearReleased ?: "Unknown",
+                    releaseDate = it.intYearReleased ?: "",
                     coverUrl = it.strAlbumThumb ?: "",
                     artistId = it.idArtist.toIntOrNull() ?: 0,
-                    genre = it.strGenre ?: "Unknown"
+                    genre = it.strGenre ?: "",
+                    description = it.strDescriptionEN ?: ""
                 )
             }
 
