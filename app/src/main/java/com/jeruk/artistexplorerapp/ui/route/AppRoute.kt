@@ -38,10 +38,11 @@ enum class AppView(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun AppRoute() {
     val navController = rememberNavController()
+
+    val artistViewModel: ArtistArtistViewModel = viewModel()
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -53,10 +54,10 @@ fun AppRoute() {
             MyTopAppBar(
                 currentView = currentView,
                 canNavigateBack = navController.previousBackStackEntry != null,
-                navigateUp = { navController.navigateUp() }
+                navigateUp = { navController.navigateUp() },
+                viewModel = artistViewModel
             )
         }
-
     ) { innerPadding ->
         NavHost(
             modifier = Modifier.padding(innerPadding),
@@ -64,14 +65,11 @@ fun AppRoute() {
             startDestination = AppView.Home.name
         ) {
             composable(route = AppView.Home.name) {
-                HomePage(navController = navController)
+                HomePage(
+                    navController = navController,
+                    viewModel = artistViewModel
+                )
             }
-
-//            composable(route = AppView.MovieDetail.name + "/{title}") { backStackEntry ->
-//                MovieDetailView(
-//                    title = backStackEntry.arguments?.getString("title")!!
-//                )
-//            }
 
             composable(route = AppView.Loading.name) {
                 LoadingPage()
@@ -84,6 +82,7 @@ fun AppRoute() {
     }
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyTopAppBar(
@@ -91,27 +90,27 @@ fun MyTopAppBar(
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: ArtistArtistViewModel = viewModel()
+    viewModel: ArtistArtistViewModel
 ) {
     val artist by viewModel.artist.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+
     CenterAlignedTopAppBar(
         title = {
-            Text(artist.nameArtist)
+            Text(
+                if (isLoading)
+                    "Loading..."
+                else if (artist.isError)
+                    "Error"
+                else
+                    artist.nameArtist
+            )
         },
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
             containerColor = Color(0xFF1C2021),
             titleContentColor = Color(0xFFB5B5B3)
         ),
-        modifier = modifier,
-//        navigationIcon = {
-//            if (canNavigateBack) {
-//                IconButton(onClick = navigateUp) {
-//                    Icon(
-//                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-//                        contentDescription = "Back"
-//                    )
-//                }
-//            }
-//        }
+        modifier = modifier
     )
 }
+

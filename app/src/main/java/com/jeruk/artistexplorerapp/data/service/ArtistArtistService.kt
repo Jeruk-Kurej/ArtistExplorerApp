@@ -22,7 +22,7 @@ interface ArtistArtistService {
     @GET("album.php")
     suspend fun getAlbumDetail(
         @Query("m") albumId: Int,
-    ): Response<ResponseArtist>
+    ): Response<ResponseAlbum>
 
     @GET("track.php")
     suspend fun getTrack(

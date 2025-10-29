@@ -6,6 +6,7 @@ data class Album(
     val releaseDate: String = "",
     val coverUrl: String = "",
     val artistId: Int = 0,
+    val genre: String = "",
     val isError: Boolean = false,
     val errorMessage: String? = null
 )
